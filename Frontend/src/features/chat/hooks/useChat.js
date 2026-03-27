@@ -13,6 +13,7 @@ import {
   setCurrentChatId,
   setLoading,
   setError,
+  setIsTyping,
 } from "../chat.slice";
 import { useDispatch } from "react-redux";
 
@@ -21,8 +22,10 @@ export const useChat = () => {
 
   async function handleSendMessage({ message, chatId }) {
     dispatch(setLoading(true));
+    dispatch(setIsTyping(true));
     const data = await sendMessage({ message, chatId });
-    const { chat, aiMessage } = data;
+    const { chat, aiMessage, userMsgId } = data;
+
     dispatch(
       createNewChat({
         chatId: chat._id,
@@ -31,6 +34,7 @@ export const useChat = () => {
     );
     dispatch(
       addNewMessage({
+        msgId: userMsgId,
         chatId: chat._id,
         content: message,
         role: "user",
@@ -38,12 +42,14 @@ export const useChat = () => {
     );
     dispatch(
       addNewMessage({
+        msgId: aiMessage._id,
         chatId: chat._id,
         content: aiMessage.content,
         role: aiMessage.role,
       }),
     );
     dispatch(setCurrentChatId(chat._id));
+    dispatch(setIsTyping(false));
     dispatch(setLoading(false));
   }
 

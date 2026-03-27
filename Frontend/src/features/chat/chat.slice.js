@@ -7,6 +7,7 @@ const chatSlice = createSlice({
     currentChatId: null,
     isLoading: false,
     error: null,
+    isTyping: false,
   },
   reducers: {
     createNewChat: (state, action) => {
@@ -19,8 +20,8 @@ const chatSlice = createSlice({
       };
     },
     addNewMessage: (state, action) => {
-      const { chatId, content, role } = action.payload;
-      state.chats[chatId].messages.push({ content, role });
+      const { msgId, chatId, content, role } = action.payload;
+      state.chats[chatId].messages.push({ msgId, content, role });
     },
     addMessages: (state, action) => {
       const { chatId, messages } = action.payload;
@@ -35,6 +36,9 @@ const chatSlice = createSlice({
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
+    setIsTyping: (state, action) => {
+      state.isTyping = action.payload;
+    },
     setError: (state, action) => {
       state.error = action.payload;
     },
@@ -48,6 +52,7 @@ export const {
   setChats,
   setCurrentChatId,
   setLoading,
+  setIsTyping,
   setError,
 } = chatSlice.actions;
 export default chatSlice.reducer;

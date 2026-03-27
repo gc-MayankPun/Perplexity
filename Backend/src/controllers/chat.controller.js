@@ -28,7 +28,7 @@ export async function sendMessage(req, res) {
     role: "ai",
   });
 
-  res.status(201).json({ title, chat, aiMessage });
+  res.status(201).json({ title, chat, aiMessage, userMsgId: userMessage._id });
 }
 
 export async function getChats(req, res) {

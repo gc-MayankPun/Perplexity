@@ -22,7 +22,7 @@ import TypingIndicator from "../components/TypingIndicator";
 const Dashboard = () => {
   const chat = useChat();
   const { user } = useSelector((state) => state.auth);
-  const { chats, currentChatId } = useSelector((state) => state.chat);
+  const { chats, currentChatId, isTyping } = useSelector((state) => state.chat);
 
   const [messages, setMessages] = useState([
     {
@@ -32,7 +32,6 @@ const Dashboard = () => {
     },
   ]);
   const [input, setInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -67,15 +66,8 @@ const Dashboard = () => {
     setInput("");
 
     if (textareaRef.current) textareaRef.current.style.height = "auto";
-    setIsTyping(true);
 
-    try {
-      chat.handleSendMessage({ message: content, chatId: currentChatId });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsTyping(false);
-    }
+    chat.handleSendMessage({ message: content, chatId: currentChatId });
   };
 
   const openChat = (chatId) => {
@@ -245,7 +237,10 @@ const Dashboard = () => {
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-6 pt-6 msgs-scroll scroll-smooth">
             {chats[currentChatId]?.messages.map((msg) => (
-              <Message key={msg._id} msg={msg} />
+              <>
+                {console.log(msg)}
+                <Message key={msg.msgId} msg={msg} />
+              </>
             ))}
             {isTyping && <TypingIndicator />}
             <div ref={messagesEndRef} />
