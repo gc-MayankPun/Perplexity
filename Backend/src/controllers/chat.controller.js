@@ -11,19 +11,22 @@ export async function sendMessage(req, res) {
   if (!chatId) {
     title = await generateChatTitle(message);
     chat = await chatModel.create({ user: req.user.id, title });
+  } else {
+    chat = await chatModel.findById(chatId);  
   }
 
+  const currentChatId = chatId || chat._id;
   const userMessage = await messageModel.create({
-    chat: chatId || chat._id,
+    chat: currentChatId,
     content: message,
     role: "user",
   });
 
-  const messages = await messageModel.find({ chat: chatId || chat._id });
+  const messages = await messageModel.find({ chat: currentChatId });
   const result = await generateResponse(messages);
 
   const aiMessage = await messageModel.create({
-    chat: chatId || chat._id,
+    chat: currentChatId,
     content: result,
     role: "ai",
   });

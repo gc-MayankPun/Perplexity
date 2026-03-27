@@ -22,7 +22,7 @@ const Message = ({ msg }) => {
         className={`max-w-[72%] px-4 py-3 rounded-2xl text-[14px] leading-relaxed ${
           isUser
             ? "bg-linear-to-br from-violet-600 to-indigo-700 text-white rounded-br-sm shadow-lg shadow-violet-900/30"
-            : "bg-white/5 border border-white/[0.07] text-neutral-300 rounded-bl-sm"
+            : "text-neutral-300 rounded-bl-sm"
         }`}
       >
         {isUser ? (

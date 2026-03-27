@@ -71,7 +71,8 @@ const Dashboard = () => {
   };
 
   const openChat = (chatId) => {
-    chat.handleOpenChat(chatId);
+    // if (chatId === currentChatId && chats[chatId]?.messages.length > 0) return;
+    chat.handleOpenChat(chatId, chats);
   };
 
   const handleKeyDown = (e) => {
@@ -237,10 +238,7 @@ const Dashboard = () => {
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-6 pt-6 msgs-scroll scroll-smooth">
             {chats[currentChatId]?.messages.map((msg) => (
-              <>
-                {console.log(msg)}
-                <Message key={msg.msgId} msg={msg} />
-              </>
+              <Message key={msg.msgId} msg={msg} />
             ))}
             {isTyping && <TypingIndicator />}
             <div ref={messagesEndRef} />
