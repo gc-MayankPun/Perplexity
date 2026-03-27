@@ -1,4 +1,5 @@
 import authRouter from "./routes/auth.routes.js";
+import chatRouter from "./routes/chat.routes.js";
 import cookieParser from "cookie-parser";
 import express from "express";
 import morgan from "morgan";
@@ -19,5 +20,6 @@ app.use(
 );
 
 app.use("/api/auth", authRouter);
+app.use("/api/chats", chatRouter);
 
 export default app;
