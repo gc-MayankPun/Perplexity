@@ -8,6 +8,7 @@ import {
 import {
   createNewChat,
   addNewMessage,
+  addMessages,
   setChats,
   setCurrentChatId,
   setLoading,
@@ -46,8 +47,45 @@ export const useChat = () => {
     dispatch(setLoading(false));
   }
 
+  async function handleGetChats() {
+    dispatch(setLoading(true));
+    const data = await getChats();
+    dispatch(
+      setChats(
+        data.chats.reduce((acc, chat) => {
+          acc[chat._id] = {
+            id: chat._id,
+            title: chat.title,
+            messages: [],
+            lastUpdated: chat.updatedAt,
+          };
+          return acc;
+        }, {}),
+      ),
+    );
+    dispatch(setLoading(false));
+  }
+
+  async function handleOpenChat(chatId) {
+    const data = await getMessages(chatId);
+
+    const formattedMessages = data.messages.map((msg) => ({
+      content: msg.content,
+      role: msg.role,
+    }));
+    dispatch(
+      addMessages({
+        chatId,
+        messages: formattedMessages,
+      }),
+    );
+    dispatch(setCurrentChatId(chatId));
+  }
+
   return {
     initializeSocketConnection,
     handleSendMessage,
+    handleGetChats,
+    handleOpenChat,
   };
 };

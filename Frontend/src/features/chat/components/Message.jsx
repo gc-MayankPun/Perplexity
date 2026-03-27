@@ -1,11 +1,15 @@
-import React from 'react'
+import React from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const Message = ({ msg }) => {
   const isUser = msg.role === "user";
 
   return (
     <div
-      className={`flex items-end gap-2.5 mb-5 ${isUser ? "flex-row-reverse" : "flex-row"}`}
+      className={`flex items-end gap-2.5 mb-5 ${
+        isUser ? "flex-row-reverse" : "flex-row"
+      }`}
       style={{ animation: "fadeUp 0.25s ease forwards" }}
     >
       {!isUser && (
@@ -13,6 +17,7 @@ const Message = ({ msg }) => {
           AI
         </div>
       )}
+
       <div
         className={`max-w-[72%] px-4 py-3 rounded-2xl text-[14px] leading-relaxed ${
           isUser
@@ -20,10 +25,46 @@ const Message = ({ msg }) => {
             : "bg-white/5 border border-white/[0.07] text-neutral-300 rounded-bl-sm"
         }`}
       >
-        {msg.content}
+        {isUser ? (
+          msg.content
+        ) : (
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              code({ inline, children, ...props }) {
+                return inline ? (
+                  <code
+                    className="bg-white/10 px-1 py-0.5 rounded text-[13px]"
+                    {...props}
+                  >
+                    {children}
+                  </code>
+                ) : (
+                  <pre className="bg-black/40 p-3 rounded-lg overflow-x-auto mt-2">
+                    <code {...props}>{children}</code>
+                  </pre>
+                );
+              },
+              p({ children }) {
+                return <p className="mb-2 last:mb-0">{children}</p>;
+              },
+              ul({ children }) {
+                return <ul className="list-disc ml-5 mb-2">{children}</ul>;
+              },
+              ol({ children }) {
+                return <ol className="list-decimal ml-5 mb-2">{children}</ol>;
+              },
+              strong({ children }) {
+                return <strong className="font-semibold">{children}</strong>;
+              },
+            }}
+          >
+            {msg.content}
+          </ReactMarkdown>
+        )}
       </div>
     </div>
   );
 };
 
-export default Message
+export default Message;

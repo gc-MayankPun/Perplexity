@@ -42,6 +42,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     chat.initializeSocketConnection();
+    chat.handleGetChats();
   }, []);
 
   useEffect(() => {
@@ -63,24 +64,22 @@ const Dashboard = () => {
     const content = (text || input).trim();
     if (!content) return;
 
-    chat.handleSendMessage({ message: content, chatId: currentChatId });
     setInput("");
 
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     setIsTyping(true);
 
-    // ← Replace with: const reply = await chat.sendMessage(content);
-    setTimeout(() => {
+    try {
+      chat.handleSendMessage({ message: content, chatId: currentChatId });
+    } catch (error) {
+      console.error(error);
+    } finally {
       setIsTyping(false);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now() + 1,
-          role: "assistant",
-          content: `You said: "${content}". Replace this with your real chat.sendMessage() call.`,
-        },
-      ]);
-    }, 1600);
+    }
+  };
+
+  const openChat = (chatId) => {
+    chat.handleOpenChat(chatId);
   };
 
   const handleKeyDown = (e) => {
@@ -181,13 +180,14 @@ const Dashboard = () => {
             Recents
           </div>
 
-          {RECENT_CHATS.map((t) => (
+          {Object.values(chats).map((chat) => (
             <SbBtn
-              key={t}
+              key={chat.id}
               icon={<IconChat />}
-              label={t}
+              label={chat.title}
               collapsed={collapsed}
-              title={t}
+              title={chat.title}
+              onClick={() => openChat(chat.id)}
               dimLabel
             />
           ))}
