@@ -70,8 +70,7 @@ const Dashboard = () => {
     chat.handleSendMessage({ message: content, chatId: currentChatId });
   };
 
-  const openChat = (chatId) => {
-    // if (chatId === currentChatId && chats[chatId]?.messages.length > 0) return;
+  const openChat = (chatId) => { 
     chat.handleOpenChat(chatId, chats);
   };
 
